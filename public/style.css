@@ -193,3 +193,5 @@ img{height:auto}
 .brand strong{white-space:nowrap}
 @media (max-width:420px){.brand strong{font-size:18px}.brand img{width:34px}}
 @media (max-width:420px){.hide-sm{display:none}}
+.brand img.logo{width:auto;height:40px;max-width:58vw}
+@media (max-width:420px){.brand img.logo{height:30px}}
