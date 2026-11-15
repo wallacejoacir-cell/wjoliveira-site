@@ -3,7 +3,7 @@ var WA_NUMBER = "5521988387088";
 
 // Free form service: create a key at https://web3forms.com with wallacejoacir@adv.oabrj.org.br
 // and paste it here. While it is empty, the form sends the request through WhatsApp instead.
-var WEB3FORMS_KEY = "";
+var WEB3FORMS_KEY = "c02e3504-79f5-4870-a761-deb788c4cde1";
 
 document.querySelectorAll("[data-year]").forEach(function (el) {
   el.textContent = new Date().getFullYear();
