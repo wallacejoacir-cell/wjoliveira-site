@@ -1,0 +1,9 @@
+/contato /#agendar 301
+/contato/ /#agendar 301
+/blog / 301
+/blog/* / 301
+/pagina-inicial-2 / 301
+/pagina-inicial-2/ / 301
+/privacy-settings-page /privacidade/ 301
+/privacy-settings-page/ /privacidade/ 301
+/direito-desportivo /direito-desportivo/ 301

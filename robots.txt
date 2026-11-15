@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wjoliveira.com.br/sitemap.xml
