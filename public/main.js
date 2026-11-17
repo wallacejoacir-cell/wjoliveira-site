@@ -9,6 +9,35 @@ document.querySelectorAll("[data-year]").forEach(function (el) {
   el.textContent = new Date().getFullYear();
 });
 
+// Visitors who arrive from a Google Ads click (gclid / utm_source=google & paid medium)
+// are remembered for 30 days, so WhatsApp messages and form emails show where they came from.
+var ADS_DAYS = 30;
+var adsOrigin = (function () {
+  var q = new URLSearchParams(location.search);
+  var paid = q.get("gclid") || q.get("gbraid") || q.get("wbraid") ||
+    (/^google$/i.test(q.get("utm_source") || "") && /^(cpc|ppc|paid)/i.test(q.get("utm_medium") || ""));
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem("wj_origem") || "null"); } catch (e) {}
+  if (paid) {
+    var tema = (q.get("utm_content") || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 20);
+    stored = { tema: tema, t: Date.now() };
+    try { localStorage.setItem("wj_origem", JSON.stringify(stored)); } catch (e) {}
+  }
+  if (stored && Date.now() - stored.t > ADS_DAYS * 864e5) stored = null;
+  return stored;
+})();
+
+if (adsOrigin) {
+  // A short, discreet code at the end of the WhatsApp message, e.g. "(ref. GA-contratos)"
+  var ref = "(ref. GA" + (adsOrigin.tema ? "-" + adsOrigin.tema : "") + ")";
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(function (a) {
+    var url = new URL(a.href);
+    var text = url.searchParams.get("text") || "Olá, vim pelo site.";
+    // encodeURIComponent (not searchParams.set) so spaces become %20, which WhatsApp reads reliably
+    a.href = url.origin + url.pathname + "?text=" + encodeURIComponent(text + "\n\n" + ref);
+  });
+}
+
 var form = document.querySelector("form.book");
 if (form) {
   form.addEventListener("submit", function (e) {
@@ -24,7 +53,8 @@ if (form) {
         "Telefone: " + data.get("telefone") + "\n" +
         "E-mail: " + data.get("email") + "\n" +
         "Assunto: " + data.get("assunto") + "\n" +
-        (data.get("mensagem") ? "Mensagem: " + data.get("mensagem") : "");
+        (data.get("mensagem") ? "Mensagem: " + data.get("mensagem") : "") +
+        (adsOrigin ? "\n\n" + ref : "");
       window.open("https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg), "_blank");
       status.className = "form-status ok";
       status.textContent = "Abrimos o WhatsApp com sua mensagem pronta. É só enviar.";
@@ -32,7 +62,8 @@ if (form) {
     }
 
     data.append("access_key", WEB3FORMS_KEY);
-    data.append("subject", "Novo pedido de consulta pelo site: " + data.get("assunto"));
+    data.append("subject", (adsOrigin ? "[Google Ads] " : "") + "Novo pedido de consulta pelo site: " + data.get("assunto"));
+    data.append("origem", adsOrigin ? "Google Ads" + (adsOrigin.tema ? " (" + adsOrigin.tema + ")" : "") : "Site (sem anúncio)");
     data.append("from_name", "Site wjoliveira.com.br");
     var btn = form.querySelector("button[type=submit]");
     btn.disabled = true;

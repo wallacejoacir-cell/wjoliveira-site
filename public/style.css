@@ -196,3 +196,6 @@ img{height:auto}
 .brand img.logo{width:auto;height:40px;max-width:58vw}
 @media (max-width:420px){.brand img.logo{height:30px}}
 .client-mark{aspect-ratio:1;width:100%;display:grid;place-items:center;background:var(--ink);color:var(--paper);font:700 clamp(34px,4vw,52px)/1 var(--display);letter-spacing:.06em;border-bottom:3px solid var(--accent)}
+
+/* Anchored sections land below the sticky header */
+[id]{scroll-margin-top:88px}
